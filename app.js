@@ -13,14 +13,34 @@ const rl = readline.createInterface({
   'input': rs,
   'output': {}
 });
+const prefectureDataMap = new Map();  // key: 都道府県 value: 集計データのオブジェクト
 rl.on('line', (lineString) => {
   const columns = lineString.split(',');
   const year = parseInt(columns[0]);
   const prefecture = columns[1];
   const popu = parseInt(columns[3]);
   if (year === 2010 || year === 2015) {
-    console.log(year);
-    console.log(prefecture);
-    console.log(popu);
+    let value = prefectureDataMap.get(prefecture);  // 連想配列からデータを取得
+    if (!value) {
+      value = { 
+        popu10: 0,    // 2010年の人口
+        popu15: 0,    // 2015年の人口
+        change: null  // 人口の変化率
+      };
+    }
+    if (year === 2010) {
+      value.popu10 = popu;
+    }
+    if (year === 2015) {
+      value.popu15 = popu;
+    }
+    prefectureDataMap.set(prefecture, value);
   }
+});
+// close イベント：すべての行が読み終わった際に呼び出される。
+rl.on('close', () => {
+  for (let [key, value] of prefectureDataMap) {
+    value.change = value.popu15 / value.popu10;
+  }
+  console.log(prefectureDataMap);
 });
