@@ -15,7 +15,7 @@ const rl = readline.createInterface({
 });
 rl.on('line', (lineString) => {
   const columns = lineString.split(',');
-  const year = praseInt(columns[0]);
+  const year = parseInt(columns[0]);
   const prefecture = columns[1];
   const popu = parseInt(columns[3]);
   if (year === 2010 || year === 2015) {
